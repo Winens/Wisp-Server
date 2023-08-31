@@ -19,3 +19,13 @@
 
 # Go workspace file
 go.work
+
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Ignore IDE and Edtior files
+.idea/
+.vscode/
