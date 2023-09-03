@@ -7,6 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var validate = validator.New()
@@ -37,10 +38,12 @@ func SignUp(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := user.GeneratePasswordDigest(form.Password); err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+	digest, err := bcrypt.GenerateFromPassword([]byte(form.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
 	}
 
+	user.Password = string(digest)
 	user.Username = form.Username
 
 	authId, err := gonanoid.New(48)
